@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Dietista Realista
+    </title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 10px 0;
+}
+
+button {
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #218838;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+}
+
+li button {
+    background: #dc3545;
+    border: none;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+li button:hover {
+    background: #c82333;
+}
+
+</style>
+<body>
+    <div class="container">
+        <h1>Lista de comidas o bebidas fuera de la dieta</h1>
+        <input type="text" id="objectInput" placeholder="Ingrese una comida o bebida" />
+        <button id="addButton">Agregar</button>
+        <ul id="objectList"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const objectInput = document.getElementById('objectInput');
+    const addButton = document.getElementById('addButton');
+    const objectList = document.getElementById('objectList');
+    
+    // Cargar objetos desde localStorage al inicio
+    loadObjects();
+
+    // Agregar nuevo objeto
+    addButton.addEventListener('click', () => {
+        const objectValue = objectInput.value.trim();
+        if (objectValue) {
+            addObject(objectValue);
+            objectInput.value = '';
+        }
+    });
+
+    // Función para agregar un objeto
+    function addObject(objectValue) {
+        const objects = getObjects();
+        objects.push(objectValue);
+        localStorage.setItem('objects', JSON.stringify(objects));
+        displayObjects();
+    }
+
+    // Función para obtener los objetos del localStorage
+    function getObjects() {
+        const objects = JSON.parse(localStorage.getItem('objects'));
+        return objects ? objects : [];
+    }
+
+    // Función para mostrar los objetos en la lista
+    function displayObjects() {
+        const objects = getObjects();
+        objectList.innerHTML = '';
+
+        objects.forEach((object, index) => {
+            const li = document.createElement('li');
+            li.textContent = object;
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Borrar';
+            deleteButton.addEventListener('click', () => {
+                deleteObject(index);
+            });
+            li.appendChild(deleteButton);
+            objectList.appendChild(li);
+        });
+    }
+
+    // Función para borrar un objeto
+    function deleteObject(index) {
+        let objects = getObjects();
+        objects.splice(index, 1);
+        localStorage.setItem('objects', JSON.stringify(objects));
+        displayObjects();
+    }
+
+    // Cargar objetos al cargar la página
+    function loadObjects() {
+        displayObjects();
+    }
+});
+
+</script>
+</html>
